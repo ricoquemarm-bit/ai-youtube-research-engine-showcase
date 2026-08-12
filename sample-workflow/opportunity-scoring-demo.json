@@ -1,0 +1,83 @@
+{
+  "name": "YouTube Opportunity Scoring - Public Demo",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "e442412e-f447-47b8-8de7-4cf4bdefc99d",
+      "name": "Test Manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [-420, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {"id": "b158dc93-cf00-468a-9c8d-572ca3ab5fd6", "name": "title", "value": "A fictional high-performing video", "type": "string"},
+            {"id": "bd386ad7-f40b-41ba-b257-cb30324d3cf7", "name": "views", "value": 85000, "type": "number"},
+            {"id": "eadbe871-a9b1-44d7-bd62-52004e2dc995", "name": "likes", "value": 4200, "type": "number"},
+            {"id": "1d2cb546-8d77-4225-b79b-f57811447860", "name": "comments", "value": 630, "type": "number"},
+            {"id": "a63d92f1-34fe-4fe8-9c2b-48375ea49825", "name": "channelSubscribers", "value": 50000, "type": "number"},
+            {"id": "184cfd05-c244-4dcf-99f9-6724ddcb0a29", "name": "publishedHoursAgo", "value": 36, "type": "number"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "483a2d67-79bf-44cc-ac1d-b104364eff01",
+      "name": "Fictional Video Metrics",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-180, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "const video = $input.first().json;\nconst views = Number(video.views);\nconst velocity = views / Math.max(1, Number(video.publishedHoursAgo));\nconst outlier = views / Math.max(100, Number(video.channelSubscribers));\nconst engagement = views ? ((Number(video.likes) + Number(video.comments)) / views) * 100 : 0;\nreturn [{ json: {\n  title: video.title,\n  viewVelocity: Number(velocity.toFixed(2)),\n  outlierScore: Number(outlier.toFixed(4)),\n  engagementRate: Number(engagement.toFixed(2)),\n  opportunityBand: outlier >= 1.5 ? 'high' : outlier >= 0.75 ? 'medium' : 'baseline'\n} }];"
+      },
+      "id": "8eb567e1-c56c-4f43-9b9c-b344d2ce66d4",
+      "name": "Score Opportunity",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [60, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {"id": "a324f87f-06e2-4032-b9ec-267a9ac237ed", "name": "summary", "value": "=Opportunity: {{ $json.opportunityBand }} | Outlier: {{ $json.outlierScore }} | Velocity: {{ $json.viewVelocity }} views/hour | Engagement: {{ $json.engagementRate }}%", "type": "string"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "c25168f8-4bbe-4a1f-9b63-57bb4a57a5b9",
+      "name": "Public Demo Result",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [300, 0]
+    },
+    {
+      "parameters": {
+        "content": "## Public demonstration only\nThis workflow demonstrates the scoring concept with fictional data. API integrations, AI prompts, storage logic, and production orchestration remain private.",
+        "height": 170,
+        "width": 370,
+        "color": 5
+      },
+      "id": "a0fc76d2-3043-4037-ad32-fb346c3740b6",
+      "name": "Demo Scope",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-450, -230]
+    }
+  ],
+  "connections": {
+    "Test Manually": {"main": [[{"node": "Fictional Video Metrics", "type": "main", "index": 0}]]},
+    "Fictional Video Metrics": {"main": [[{"node": "Score Opportunity", "type": "main", "index": 0}]]},
+    "Score Opportunity": {"main": [[{"node": "Public Demo Result", "type": "main", "index": 0}]]}
+  },
+  "pinData": {},
+  "settings": {"executionOrder": "v1", "timezone": "Europe/London", "saveManualExecutions": true},
+  "active": false,
+  "versionId": "b042583e-1a41-4ba5-8780-5293241a2094",
+  "meta": {"templateCredsSetupCompleted": false},
+  "tags": []
+}
+
