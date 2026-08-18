@@ -1,5 +1,7 @@
 # AI YouTube Research Engine
 
+![Exact workflow shown on Rico Integration](docs/portfolio-preview.png)
+
 > Public case study for a production-minded n8n system that discovers YouTube content opportunities through channel research, outlier scoring, multimodal AI analysis, audience-comment intelligence, and structured reporting.
 
 ![n8n](https://img.shields.io/badge/n8n-Automation-FF6D5A?logo=n8n&logoColor=white)
